@@ -14,9 +14,9 @@ def main():
     parser = argparse.ArgumentParser(
         description='Mask secret information from images using OCR.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('input_paths', metavar='INPUT', type=str, nargs='+',
+    parser.add_argument('input_paths', metavar='INPUT', nargs='+',
                         help='input files')
-    parser.add_argument('output_location', metavar='OUTPUT', type=str,
+    parser.add_argument('output_location', metavar='OUTPUT',
                         help='output file or directory')
     parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
                         help='path to secret regex file')
@@ -24,6 +24,9 @@ def main():
                         help='language for OCR')
     parser.add_argument('-c', '--color', dest='color', default='#666',
                         help='color to fill secrets')
+    parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CONFIGS',
+                        default=','.join(ModifiedCharBoxBuilder.tesseract_configs),
+                        help='comma-separated configs to be passed to tesseract')
 
     args = parser.parse_args()
 
@@ -32,7 +35,11 @@ def main():
         exit(1)
 
     secret_res = get_secret_res(args.secret_path)
-    fill_color = ImageColor.getrgb(args.color)
+    options = {
+        'lang': args.lang,
+        'fill_color': ImageColor.getrgb(args.color),
+        'tesseract_configs': args.tesseract_configs.split(','),
+    }
 
     for input_path in args.input_paths:
         if os.path.isdir(args.output_location):
@@ -40,7 +47,7 @@ def main():
         else:
             output_path = args.output_location
 
-        mask_secrets(input_path, output_path, secret_res, lang=args.lang, fill_color=fill_color)
+        mask_secrets(input_path, output_path, secret_res, **options)
 
 
 def get_secret_res(secret_path):
@@ -61,7 +68,7 @@ def get_secret_res(secret_path):
     return res
 
 
-def mask_secrets(input_path, output_path, secret_res, lang, fill_color):
+def mask_secrets(input_path, output_path, secret_res, lang, fill_color, tesseract_configs=None):
     """
     Mask secret infomation in an image.
 
@@ -80,6 +87,9 @@ def mask_secrets(input_path, output_path, secret_res, lang, fill_color):
     cropped_image = image
 
     builder = ModifiedCharBoxBuilder(image.size[1])
+    if tesseract_configs:
+        builder.tesseract_configs = tesseract_configs
+
     boxes = image_to_string(cropped_image, lang=lang, builder=builder)
 
     if os.environ.get('DEBUG'):
