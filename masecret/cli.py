@@ -23,8 +23,8 @@ def main():
                         version='%(prog)s {0}'.format(__version__))
     parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
                         help='path to secret regex file')
-    parser.add_argument('-l', '--lang', dest='lang', default='eng+jpn',
-                        help='language for OCR')
+    parser.add_argument('-l', '--lang', dest='lang', default='eng',
+                        help='language for OCR, can be multiple languages joined by + sign')
     parser.add_argument('-c', '--color', dest='color', default='#666',
                         help='color to fill secrets')
     parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CONFIGS',
