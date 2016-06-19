@@ -1,8 +1,9 @@
 import sys
 import os
 import re
+import argparse
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageColor
 from pyocr.tesseract import image_to_string
 
 from masecret.builders import ModifiedCharBoxBuilder
@@ -10,28 +11,36 @@ from masecret.position_utils import offset_rect, bounding_box, padding_box
 
 
 def main():
-    args = sys.argv[1:]
+    parser = argparse.ArgumentParser(
+        description='Mask secret information from images using OCR.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('input_paths', metavar='INPUT', type=str, nargs='+',
+                        help='input files')
+    parser.add_argument('output_location', metavar='OUTPUT', type=str,
+                        help='output file or directory')
+    parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
+                        help='path to secret regex file')
+    parser.add_argument('-l', '--lang', dest='lang', default='eng+jpn',
+                        help='language for OCR')
+    parser.add_argument('-c', '--color', dest='color', default='#666',
+                        help='color to fill secrets')
 
-    if len(args) < 2:
-        print('Usage: {0} INPUT... OUTPUT'.format(sys.argv[0]), file=sys.stderr)
-        exit(1)
+    args = parser.parse_args()
 
-    input_paths = args[:-1]
-    output_location = args[-1]
-
-    if len(input_paths) >= 2 and not os.path.isdir(output_location):
+    if len(args.input_paths) >= 2 and not os.path.isdir(args.output_location):
         print('OUTPUT must be a directory when there are multiple INPUTs.', file=sys.stderr)
         exit(1)
 
-    secret_res = get_secret_res('SECRETS.txt')
+    secret_res = get_secret_res(args.secret_path)
+    fill_color = ImageColor.getrgb(args.color)
 
-    for input_path in input_paths:
-        if os.path.isdir(output_location):
-            output_path = os.path.join(output_location, os.path.basename(input_path))
+    for input_path in args.input_paths:
+        if os.path.isdir(args.output_location):
+            output_path = os.path.join(args.output_location, os.path.basename(input_path))
         else:
-            output_path = output_location
+            output_path = args.output_location
 
-        mask_secrets(input_path, output_path, secret_res, (96, 96, 96))
+        mask_secrets(input_path, output_path, secret_res, lang=args.lang, fill_color=fill_color)
 
 
 def get_secret_res(secret_path):
@@ -52,7 +61,7 @@ def get_secret_res(secret_path):
     return res
 
 
-def mask_secrets(input_path, output_path, secret_res, color):
+def mask_secrets(input_path, output_path, secret_res, lang, fill_color):
     """
     Mask secret infomation in an image.
 
@@ -71,7 +80,7 @@ def mask_secrets(input_path, output_path, secret_res, color):
     cropped_image = image
 
     builder = ModifiedCharBoxBuilder(image.size[1])
-    boxes = image_to_string(cropped_image, lang='eng+jpn', builder=builder)
+    boxes = image_to_string(cropped_image, lang=lang, builder=builder)
 
     if os.environ.get('DEBUG'):
         for box in boxes:
@@ -90,7 +99,7 @@ def mask_secrets(input_path, output_path, secret_res, color):
 
     print('Found {0} secrets at {1}'.format(len(secret_rects), secret_rects), file=sys.stderr)
     for rect in secret_rects:
-        mask_rect(image, rect, color)
+        mask_rect(image, rect, fill_color)
 
     image.save(output_path)
     print('Saved to {0}'.format(output_path), file=sys.stderr)
