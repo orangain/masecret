@@ -74,8 +74,8 @@ optional arguments:
   -c COLOR, --color COLOR
                         color to fill secrets (default: #666)
   --tesseract-configs CONFIGS
-                        comma-separated configs to be passed to tesseract
-                        (default: makebox)
+                        (Advanced Option) comma-separated configs to be passed
+                        to tesseract (default: makebox)
 ```
 
 ## Debug

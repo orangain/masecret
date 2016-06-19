@@ -29,7 +29,7 @@ def main():
                         help='color to fill secrets')
     parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CONFIGS',
                         default=','.join(ModifiedCharBoxBuilder.tesseract_configs),
-                        help='comma-separated configs to be passed to tesseract')
+                        help='(Advanced Option) comma-separated configs to be passed to tesseract')
 
     args = parser.parse_args()
 
