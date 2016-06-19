@@ -11,17 +11,17 @@ After:
 
 ## Prerequisite
 
-* Python 3
+* Python 3.3+
 * [Tesseract](https://github.com/tesseract-ocr/tesseract)
   * Languages for OCR (can be set by `--lang`, default is `eng+jpn`) must be available.
 
 ## Installation
 
 ```
-$ pip install masecret
+$ pip3 install masecret
 ```
 
-`pip` may be `pip3`. You may need `sudo`.
+You may need `sudo`.
 
 masecret depends on [pyocr](https://github.com/jflesch/pyocr) and [Pillow](https://pillow.readthedocs.io/). If you fail to install Pillow, please see the installation instruction of Pillow.
 
@@ -31,10 +31,10 @@ masecret depends on [pyocr](https://github.com/jflesch/pyocr) and [Pillow](https
 
 Create a `SECRETS.txt` in a current directory. Content of the file is regular expression patterns which match secret information you want to mask. You can includes multiple patterns using multi lines.
 
-Example content of `SECRETS.txt`:
+Example content of `SECRETS.txt` to mask AWS account number:
 
 ```
-[-—\d]{12,}
+[-\d]{12,}
 ```
 
 ### Mask Secret
@@ -69,7 +69,8 @@ optional arguments:
   -V, --version         show program's version number and exit
   -s SECRET_PATH, --secret SECRET_PATH
                         path to secret regex file (default: ./SECRETS.txt)
-  -l LANG, --lang LANG  language for OCR (default: eng+jpn)
+  -l LANG, --lang LANG  language for OCR, can be multiple languages joined by
+                        + sign (default: eng)
   -c COLOR, --color COLOR
                         color to fill secrets (default: #666)
   --tesseract-configs CONFIGS
