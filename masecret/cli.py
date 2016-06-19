@@ -13,7 +13,7 @@ from masecret.position_utils import offset_rect, bounding_box, padding_box
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Mask secret information from images using OCR.',
+        description='Mask secret information of images using OCR.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('input_paths', metavar='INPUT', nargs='+',
                         help='input files')

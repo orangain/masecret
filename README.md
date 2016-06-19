@@ -1,5 +1,5 @@
 # masecret
-A command to mask secret information from images using OCR.
+A command to mask secret information of images using OCR.
 
 Before:
 
@@ -58,7 +58,7 @@ usage: masecret [-h] [-V] [-s SECRET_PATH] [-l LANG] [-c COLOR]
                 [--tesseract-configs CONFIGS]
                 INPUT [INPUT ...] OUTPUT
 
-Mask secret information from images using OCR.
+Mask secret information of images using OCR.
 
 positional arguments:
   INPUT                 input files
