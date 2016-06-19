@@ -1,8 +1,17 @@
+import re
+
 from setuptools import setup
+
+
+with open('masecret/__init__.py') as f:
+    init_content = f.read()
+
+version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                    init_content, re.MULTILINE).group(1)
 
 setup(
     name="masecret",
-    version="0.1.0",
+    version=version,
     author="orangain",
     author_email="orangain@gmail.com",
     description="A command to mask secret information from images using OCR",

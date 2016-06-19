@@ -6,6 +6,7 @@ import argparse
 from PIL import Image, ImageDraw, ImageColor
 from pyocr.tesseract import image_to_string
 
+from masecret import __version__
 from masecret.builders import ModifiedCharBoxBuilder
 from masecret.position_utils import offset_rect, bounding_box, padding_box
 
@@ -18,6 +19,8 @@ def main():
                         help='input files')
     parser.add_argument('output_location', metavar='OUTPUT',
                         help='output file or directory')
+    parser.add_argument('-V', '--version', action='version',
+                        version='%(prog)s {0}'.format(__version__))
     parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
                         help='path to secret regex file')
     parser.add_argument('-l', '--lang', dest='lang', default='eng+jpn',
