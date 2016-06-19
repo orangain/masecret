@@ -1,3 +1,5 @@
+### https://raw.github.com/github/gitignore/c699a4f4684e9e294c9c550f820ca330f019b6f9/python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -53,9 +55,8 @@ coverage.xml
 *.log
 local_settings.py
 
-# Flask stuff:
+# Flask instance folder
 instance/
-.webassets-cache
 
 # Scrapy stuff:
 .scrapy
@@ -85,5 +86,5 @@ ENV/
 # Spyder project settings
 .spyderproject
 
-# Rope project settings
-.ropeproject
+# masecret
+SECRETS.txt
