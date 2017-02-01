@@ -8,13 +8,11 @@ Before:
 .. figure:: docs/original.png
    :alt: Before
 
-   Before
 After:
 
 .. figure:: docs/masked.png
    :alt: After
 
-   After
 Prerequisite
 ------------
 
