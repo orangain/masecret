@@ -13,6 +13,7 @@ class ModifiedCharBoxBuilder(CharBoxBuilder):
         param: int image_height
         """
 
+        super().__init__()
         self.image_height = image_height
 
     def read_file(self, file_descriptor):

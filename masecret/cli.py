@@ -78,14 +78,37 @@ def mask_secrets(input_path, output_path, secret_res, lang, fill_color, tesserac
     param: str input_path
     param: str output_path
     param: list secret_res
-    param: tuple color
+    param: str lang
+    param: str tesseract_configs
+    param: tuple fill_color
     """
 
     print('Processing {0}...'.format(input_path), file=sys.stderr)
 
     image = Image.open(input_path)
-    #offset = (0, 150)
-    #cropped_image = image.crop((offset[0], offset[1], image.size[0], 220))
+    secret_rects = find_secret_rects(image, secret_res, lang, tesseract_configs)
+    print('Found {0} secrets at {1}'.format(len(secret_rects), secret_rects), file=sys.stderr)
+    for rect in secret_rects:
+        mask_rect(image, rect, fill_color)
+
+    image.save(output_path)
+    print('Saved to {0}'.format(output_path), file=sys.stderr)
+
+
+def find_secret_rects(image, secret_res, lang, tesseract_configs=None):
+    """
+    Find secret rects in an image.
+
+    param: Image image
+    param: list secret_res
+    param: str lang
+    param: str tesseract_configs
+    return: list of rects
+    rtype: list
+    """
+
+    # offset = (0, 150)
+    # cropped_image = image.crop((offset[0], offset[1], image.size[0], 220))
     offset = (0, 0)
     cropped_image = image
 
@@ -110,12 +133,7 @@ def mask_secrets(input_path, output_path, secret_res, lang, fill_color, tesserac
             rect = offset_rect(offset, padding_box(rect, 2))
             secret_rects.append(rect)
 
-    print('Found {0} secrets at {1}'.format(len(secret_rects), secret_rects), file=sys.stderr)
-    for rect in secret_rects:
-        mask_rect(image, rect, fill_color)
-
-    image.save(output_path)
-    print('Saved to {0}'.format(output_path), file=sys.stderr)
+    return secret_rects
 
 
 def mask_rect(image, rect, color):
