@@ -19,7 +19,7 @@ Prerequisite
 -  Python 3.3+
 -  `Tesseract <https://github.com/tesseract-ocr/tesseract>`__
 
-  -  Languages for OCR (can be set by ``--lang``, default is ``eng+jpn``)
+  -  Language data for OCR (can be specified with ``--lang``, default is ``eng``)
      must be available.
 
 Installation
