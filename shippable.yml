@@ -1,0 +1,8 @@
+language: none
+build:
+  pre_ci:
+    - docker build -t masecret .
+  pre_ci_boot:
+    image_name: masecret
+  ci:
+    - nosetest
