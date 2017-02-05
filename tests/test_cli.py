@@ -50,6 +50,11 @@ class TestParseArgs(unittest.TestCase):
         self.assertTrue(args.in_place)
         self.assertEqual(args.input_paths, ['original.png'])
 
+    def test_both_in_place_and_output(self):
+        with self.assertRaises(SystemExit):
+            parse_args(['-i', 'original.png', '-o', 'masked.png'])
+        parser.error.assert_called_once_with('You MUST NOT specify both -i and -o options.')
+
 
 class TestInputOutputPairs(unittest.TestCase):
 

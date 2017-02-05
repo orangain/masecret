@@ -62,6 +62,9 @@ def parse_args(args=None):
 
     args = parser.parse_args(args)
 
+    if args.in_place and args.output_location:
+        parser.error('You MUST NOT specify both -i and -o options.')
+
     if not args.in_place:
         if not args.output_location:
             parser.error('-o OUTPUT is required unless -i is specified.')
