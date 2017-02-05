@@ -11,42 +11,34 @@ from masecret.builders import ModifiedCharBoxBuilder
 from masecret.position_utils import offset_rect, bounding_box, padding_box
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        usage='''
+parser = argparse.ArgumentParser(
+    usage='''
     %(prog)s [options] INPUT -o OUTPUT
     %(prog)s [options] INPUT... -o OUTPUT
     %(prog)s -i [options] INPUT...''',
-        description='Mask secret information of images using OCR.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('input_paths', metavar='INPUT', nargs='+',
-                        help='input files')
-    parser.add_argument('-V', '--version', action='version',
-                        version='%(prog)s {0}'.format(__version__))
-    parser.add_argument('-o', '--output', dest='output_location', metavar='OUTPUT',
-                        help='output file or directory')
-    parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
-                        help='path to secret regex file')
-    parser.add_argument('-l', '--lang', dest='lang', default='eng',
-                        help='language for OCR, can be multiple languages joined by + sign')
-    parser.add_argument('-c', '--color', dest='color', default='#666',
-                        help='color to fill secrets')
-    parser.add_argument('-i', '--in-place', dest='in_place', action='store_true', default=False,
-                        help='mask image files in-place. WARNING: No backup files will be saved')
-    parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CONFIGS',
-                        default=','.join(ModifiedCharBoxBuilder.tesseract_configs),
-                        help='(Advanced Option) comma-separated configs to be passed to tesseract')
+    description='Mask secret information of images using OCR.',
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('input_paths', metavar='INPUT', nargs='+',
+                    help='input files')
+parser.add_argument('-V', '--version', action='version',
+                    version='%(prog)s {0}'.format(__version__))
+parser.add_argument('-o', '--output', dest='output_location', metavar='OUTPUT',
+                    help='output file or directory')
+parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
+                    help='path to secret regex file')
+parser.add_argument('-l', '--lang', dest='lang', default='eng',
+                    help='language for OCR, can be multiple languages joined by + sign')
+parser.add_argument('-c', '--color', dest='color', default='#666',
+                    help='color to fill secrets')
+parser.add_argument('-i', '--in-place', dest='in_place', action='store_true', default=False,
+                    help='mask image files in-place. WARNING: No backup files will be saved')
+parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CONFIGS',
+                    default=','.join(ModifiedCharBoxBuilder.tesseract_configs),
+                    help='(Advanced Option) comma-separated configs to be passed to tesseract')
 
-    args = parser.parse_args()
 
-    if not args.in_place:
-        if not args.output_location:
-            print('-o OUTPUT is required unless -i is specified.', file=sys.stderr)
-            exit(1)
-
-        if len(args.input_paths) >= 2 and not os.path.isdir(args.output_location):
-            print('OUTPUT must be a directory when there are multiple INPUTs.', file=sys.stderr)
-            exit(1)
+def main():
+    args = parse_args()
 
     secret_res = get_secret_res(args.secret_path)
     options = {
@@ -57,6 +49,27 @@ def main():
 
     for input_path, output_path in input_output_pairs(args):
         mask_secrets(input_path, output_path, secret_res, **options)
+
+
+def parse_args(args=None):
+    """
+    Parse command line arguments and convert to a Namespace object.
+
+    param: list argv
+    return: parsed arguments
+    rtype: Namespace
+    """
+
+    args = parser.parse_args(args)
+
+    if not args.in_place:
+        if not args.output_location:
+            parser.error('-o OUTPUT is required unless -i is specified.')
+
+        if len(args.input_paths) >= 2 and not os.path.isdir(args.output_location):
+            parser.error('OUTPUT must be a directory when there are multiple INPUTs.')
+
+    return args
 
 
 def get_secret_res(secret_path):
@@ -78,6 +91,14 @@ def get_secret_res(secret_path):
 
 
 def input_output_pairs(args):
+    """
+    Yield pairs of input path and output path.
+
+    param: Namespace args
+    return: generator of tuple (input_path, output_path)
+    rtype: generator
+    """
+
     for input_path in args.input_paths:
         if args.in_place:
             yield (input_path, input_path)
