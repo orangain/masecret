@@ -1,7 +1,7 @@
 masecret
 ========
 
-A command to mask secret information of images using OCR.
+masecret is a command to mask secret information in image files using OCR.
 
 Before:
 
@@ -38,12 +38,31 @@ Pillow, please see the installation instruction of Pillow.
 Usage
 -----
 
-Preparation
+Mask a single file:
+
+::
+
+    $ masecret -r '[-\d]{12,}' original.png -o masked.png
+
+Mask multiple files (output directory must exist):
+
+::
+
+    $ masecret -r '[-\d]{12,}' original1.png original2.png ... -o masked_images/
+
+With ``-i`` option, image files are masked in-place.
+
+::
+
+    $ masecret -r '[-\d]{12,}' -i original1.png original2.png ...
+
+SECRETS.txt
 ~~~~~~~~~~~
 
-Create a ``SECRETS.txt`` in a current directory. Content of the file is
-regular expression patterns which match secret information you want to
-mask. You can includes multiple patterns using multi lines.
+If you don't specify ``-r`` option, regular expression are read from a file named
+``SECRETS.txt`` in a current directory.
+Content of the file is regular expression patterns which match secret information
+you want to mask. You can include multiple patterns line by line.
 
 Example content of ``SECRETS.txt`` to mask AWS account number:
 
@@ -51,45 +70,39 @@ Example content of ``SECRETS.txt`` to mask AWS account number:
 
     [-\d]{12,}
 
-Mask Secret
-~~~~~~~~~~~
-
-Mask a single file:
-
-::
-
-    $ masecret original.png masked.png
-
-Mask multiple files (output directory must exist):
-
-::
-
-    $ masecret original1.png original2.png ... masked_images/
-
 Full Usage
 ~~~~~~~~~~
 
 ::
 
-    usage: masecret [-h] [-V] [-s SECRET_PATH] [-l LANG] [-c COLOR]
-                    [--tesseract-configs CONFIGS]
-                    INPUT [INPUT ...] OUTPUT
+    usage:
+        masecret [options] INPUT -o OUTPUT
+        masecret [options] INPUT... -o OUTPUT
+        masecret -i [options] INPUT...
 
-    Mask secret information of images using OCR.
+    Mask secret information in image files using OCR. Put regular expression
+    matches secret information into a file named SECRETS.txt or -r option.
 
     positional arguments:
       INPUT                 input files
-      OUTPUT                output file or directory
 
     optional arguments:
       -h, --help            show this help message and exit
       -V, --version         show program's version number and exit
+      -o OUTPUT, --output OUTPUT
+                            output file or directory (default: None)
+      -r REGEX, --regex REGEX
+                            regular expression matches secret information
+                            (default: None)
       -s SECRET_PATH, --secret SECRET_PATH
-                            path to secret regex file (default: ./SECRETS.txt)
+                            path to file containing regexes line by line that
+                            match secret information (default: ./SECRETS.txt)
       -l LANG, --lang LANG  language for OCR, can be multiple languages joined by
-                            + sign (default: eng)
+                            + sign, e.g. eng+jpn (default: eng)
       -c COLOR, --color COLOR
                             color to fill secrets (default: #666)
+      -i, --in-place        mask image files in-place. WARNING: No backup files
+                            will be saved (default: False)
       --tesseract-configs CONFIGS
                             (Advanced Option) comma-separated configs to be passed
                             to tesseract (default: makebox)
@@ -103,7 +116,7 @@ recognized are printed with position.
 
 ::
 
-    $ DEBUG=1 masecret original.png masked.png
+    $ DEBUG=1 masecret original.png -o masked.png
     Processing original.png...
     . ((136, 90), (160, 114))
     . ((176, 90), (200, 114))
