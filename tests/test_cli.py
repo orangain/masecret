@@ -9,6 +9,8 @@ from PIL import Image
 
 from masecret.cli import parser, parse_args, get_secret_res, input_output_pairs, find_secret_rects
 
+FIXTURES_DIR = os.path.join(os.path.dirname(__file__), 'fixtures')
+
 
 class TestParseArgs(unittest.TestCase):
 
@@ -65,7 +67,7 @@ class TestParseArgs(unittest.TestCase):
 class TestGetSecretRes(unittest.TestCase):
 
     def test_secret_file(self):
-        secrets_path = os.path.join(os.path.dirname(__file__), 'secrets.txt')
+        secrets_path = os.path.join(FIXTURES_DIR, 'secrets_for_test.txt')
         args = parse_args(['-s', secrets_path, 'original.png', '-o', 'masked.png'])
         patterns = [r.pattern for r in get_secret_res(args)]
         self.assertEqual(patterns, [r'[-\d]+', r'PA.*RD'])
@@ -112,7 +114,7 @@ class TestInputOutputPairs(unittest.TestCase):
 class TestFindSecretRects(unittest.TestCase):
 
     def test_find_secret_rects(self):
-        image = Image.open(os.path.join(os.path.dirname(__file__), 'fixture_eng.png'))
+        image = Image.open(os.path.join(FIXTURES_DIR, 'original_eng.png'))
         secret_res = [re.compile(r'[-\d]{12,}')]
 
         secret_rects = find_secret_rects(image, secret_res, 'eng')
@@ -120,7 +122,7 @@ class TestFindSecretRects(unittest.TestCase):
         self.assertEquals(secret_rects, [((1460, 235), (1665, 259))])
 
     def test_find_secret_rects_jpn(self):
-        image = Image.open(os.path.join(os.path.dirname(__file__), 'fixture_jpn.png'))
+        image = Image.open(os.path.join(FIXTURES_DIR, 'original_jpn.png'))
         secret_res = [re.compile(r'[-—\d]{12,}')]  # include dash sign
 
         secret_rects = find_secret_rects(image, secret_res, 'eng+jpn')
