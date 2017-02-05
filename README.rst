@@ -1,9 +1,11 @@
 masecret
 ========
 
-|badge| |coverageBadge|
+|pypiBadge| |testBadge| |coverageBadge|
 
-.. |badge| image:: https://api.shippable.com/projects/5895dc346e5b460f005d7aaa/badge?branch=master
+.. |pypiBadge| image:: https://badge.fury.io/py/masecret.svg
+    :target: https://pypi.python.org/pypi/masecret
+.. |testBadge| image:: https://api.shippable.com/projects/5895dc346e5b460f005d7aaa/badge?branch=master
     :target: https://app.shippable.com/projects/5895dc346e5b460f005d7aaa
 .. |coverageBadge| image:: https://api.shippable.com/projects/5895dc346e5b460f005d7aaa/coverageBadge?branch=master
     :target: https://app.shippable.com/projects/5895dc346e5b460f005d7aaa
