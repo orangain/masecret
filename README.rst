@@ -135,3 +135,12 @@ License
 -------
 
 MIT License. See: ``LICENSE``.
+
+Packaging
+---------
+
+::
+
+    (venv) $ pip install -r dev-requirements.txt
+    (venv) $ nosetests
+    (venv) $ python setup.py sdist bdist_wheel upload
