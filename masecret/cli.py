@@ -16,7 +16,10 @@ parser = argparse.ArgumentParser(
     %(prog)s [options] INPUT -o OUTPUT
     %(prog)s [options] INPUT... -o OUTPUT
     %(prog)s -i [options] INPUT...''',
-    description='Mask secret information of images using OCR.',
+    description='''
+        Mask secret information in image files using OCR.
+        Put regular expression matches secret information
+        into a file named SECRETS.txt or -r option.''',
     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('input_paths', metavar='INPUT', nargs='+',
                     help='input files')
@@ -25,11 +28,11 @@ parser.add_argument('-V', '--version', action='version',
 parser.add_argument('-o', '--output', dest='output_location', metavar='OUTPUT',
                     help='output file or directory')
 parser.add_argument('-r', '--regex', dest='regex', default=None,
-                    help='regex matches to secret information')
+                    help='regular expression matches secret information')
 parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
-                    help='path to secret regex file')
+                    help='path to file containing regexes line by line that match secret information')
 parser.add_argument('-l', '--lang', dest='lang', default='eng',
-                    help='language for OCR, can be multiple languages joined by + sign')
+                    help='language for OCR, can be multiple languages joined by + sign, e.g. eng+jpn')
 parser.add_argument('-c', '--color', dest='color', default='#666',
                     help='color to fill secrets')
 parser.add_argument('-i', '--in-place', dest='in_place', action='store_true', default=False,
