@@ -16,11 +16,11 @@ After:
 Prerequisite
 ------------
 
--  Python 3.3+
--  `Tesseract <https://github.com/tesseract-ocr/tesseract>`__
+- Python 3.3+
+- `Tesseract <https://github.com/tesseract-ocr/tesseract>`__
 
-  -  Language data for OCR (can be specified with ``--lang``, default is ``eng``)
-     must be available.
+  - Language data for OCR (can be specified with ``--lang``, default is ``eng``)
+    must be available.
 
 Installation
 ------------
@@ -33,42 +33,32 @@ You may need ``sudo``.
 
 masecret depends on `pyocr <https://github.com/jflesch/pyocr>`__ and
 `Pillow <https://pillow.readthedocs.io/>`__. If you fail to install
-Pillow, please see the installation instruction of Pillow.
+Pillow, please see `the installation instruction of Pillow <http://pillow.readthedocs.io/en/latest/installation.html>`__.
 
 Usage
 -----
 
-Mask a single file:
-
-::
+Mask a single image file with a regular expression pattern that match AWS account number::
 
     $ masecret -r '[-\d]{12,}' original.png -o masked.png
 
-Mask multiple files (output directory must exist):
-
-::
+Mask multiple image files (output directory must exist)::
 
     $ masecret -r '[-\d]{12,}' original1.png original2.png ... -o masked_images/
 
-With ``-i`` option, image files are masked in-place.
+Mask image files in-place with ``-i`` option::
 
-::
+    $ masecret -i -r '[-\d]{12,}' original1.png original2.png ...
 
-    $ masecret -r '[-\d]{12,}' -i original1.png original2.png ...
+WARNING: No backup files will be saved.
 
 SECRETS.txt
 ~~~~~~~~~~~
 
-If you don't specify ``-r`` option, regular expression are read from a file named
+If ``-r`` option is not specified, regular expression will be read from a file named
 ``SECRETS.txt`` in a current directory.
-Content of the file is regular expression patterns which match secret information
+Content of the file is regular expression patterns that match secret information
 you want to mask. You can include multiple patterns line by line.
-
-Example content of ``SECRETS.txt`` to mask AWS account number:
-
-::
-
-    [-\d]{12,}
 
 Full Usage
 ~~~~~~~~~~
