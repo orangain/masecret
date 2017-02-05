@@ -24,6 +24,8 @@ parser.add_argument('-V', '--version', action='version',
                     version='%(prog)s {0}'.format(__version__))
 parser.add_argument('-o', '--output', dest='output_location', metavar='OUTPUT',
                     help='output file or directory')
+parser.add_argument('-r', '--regex', dest='regex', default=None,
+                    help='regex matches to secret information')
 parser.add_argument('-s', '--secret', dest='secret_path', default='./SECRETS.txt',
                     help='path to secret regex file')
 parser.add_argument('-l', '--lang', dest='lang', default='eng',
@@ -40,7 +42,7 @@ parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CO
 def main():
     args = parse_args()
 
-    secret_res = get_secret_res(args.secret_path)
+    secret_res = get_secret_res(args)
     options = {
         'lang': args.lang,
         'fill_color': ImageColor.getrgb(args.color),
@@ -55,7 +57,7 @@ def parse_args(args=None):
     """
     Parse command line arguments and convert to a Namespace object.
 
-    param: list argv
+    param: list args
     return: parsed arguments
     rtype: Namespace
     """
@@ -72,10 +74,28 @@ def parse_args(args=None):
         if len(args.input_paths) >= 2 and not os.path.isdir(args.output_location):
             parser.error('OUTPUT must be a directory when there are multiple INPUTs.')
 
+    if args.regex and args.secret_path != './SECRETS.txt':
+        parser.error('You MUST NOT specify both -r and -s options.')
+
     return args
 
 
-def get_secret_res(secret_path):
+def get_secret_res(args):
+    """
+    Get secret regexes from a Namespace object.
+
+    param: Namespace args
+    return: list of regexes
+    rtype: list
+    """
+
+    if args.regex:
+        return [re.compile(args.regex)]
+    else:
+        return read_secret_res_from_file(args.secret_path)
+
+
+def read_secret_res_from_file(secret_path):
     """
     Read secret regexes from a file secret_path.
 

@@ -7,7 +7,7 @@ import tempfile
 
 from PIL import Image
 
-from masecret.cli import parser, parse_args, input_output_pairs, find_secret_rects
+from masecret.cli import parser, parse_args, get_secret_res, input_output_pairs, find_secret_rects
 
 
 class TestParseArgs(unittest.TestCase):
@@ -54,6 +54,26 @@ class TestParseArgs(unittest.TestCase):
         with self.assertRaises(SystemExit):
             parse_args(['-i', 'original.png', '-o', 'masked.png'])
         parser.error.assert_called_once_with('You MUST NOT specify both -i and -o options.')
+
+    def test_both_regex_and_secret(self):
+        with self.assertRaises(SystemExit):
+            parse_args(['-s', 'mysecret.txt', '-r', 'PA.*RD',
+                        'original.png', '-o', 'masked.png'])
+        parser.error.assert_called_once_with('You MUST NOT specify both -r and -s options.')
+
+
+class TestGetSecretRes(unittest.TestCase):
+
+    def test_secret_file(self):
+        secrets_path = os.path.join(os.path.dirname(__file__), 'secrets.txt')
+        args = parse_args(['-s', secrets_path, 'original.png', '-o', 'masked.png'])
+        patterns = [r.pattern for r in get_secret_res(args)]
+        self.assertEqual(patterns, [r'[-\d]+', r'PA.*RD'])
+
+    def test_regex_option(self):
+        args = parse_args(['-r', 'PA.*RD', 'original.png', '-o', 'masked.png'])
+        patterns = [r.pattern for r in get_secret_res(args)]
+        self.assertEqual(patterns, ['PA.*RD'])
 
 
 class TestInputOutputPairs(unittest.TestCase):
