@@ -102,9 +102,9 @@ Full Usage
                             color to fill secrets (default: #666)
       -i, --in-place        mask image files in-place. WARNING: No backup files
                             will be saved (default: False)
-      --tesseract-configs CONFIGS
-                            (Advanced Option) comma-separated configs to be passed
-                            to tesseract (default: makebox)
+      --tesseract-params PARAMS
+                            (Advanced Option) additional parameters passed to
+                            tesseract (default: -psm 6 makebox)
 
 Debug
 -----
