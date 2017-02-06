@@ -9,7 +9,7 @@ from pyocr.tesseract import image_to_string
 
 from masecret import __version__
 from masecret.builders import ModifiedCharBoxBuilder
-from masecret.position_utils import offset_rect, bounding_box, padding_box
+from masecret.position_utils import offset_rect, padding_box, bounding_boxes_by_line
 
 
 parser = argparse.ArgumentParser(
@@ -208,9 +208,10 @@ def find_secret_rects(image, secret_res, lang, tesseract_configs=None):
     for secret_re in secret_res:
         for m in secret_re.finditer(content):
             matched_boxes = boxes[m.start():m.end()]
-            rect = bounding_box([b.position for b in matched_boxes])
-            rect = offset_rect(offset, padding_box(rect, 2))
-            secret_rects.append(rect)
+            matched_rects = [b.position for b in matched_boxes]
+            for rect in bounding_boxes_by_line(matched_rects):
+                rect = offset_rect(offset, padding_box(rect, 2))
+                secret_rects.append(rect)
 
     return secret_rects
 

@@ -1,6 +1,7 @@
 import unittest
 
-from masecret.position_utils import add_positions, offset_rect, bounding_box, padding_box
+from masecret.position_utils import (add_positions, offset_rect, bounding_box,
+                                     padding_box, bounding_boxes_by_line)
 
 
 class TestPositionUtils(unittest.TestCase):
@@ -35,6 +36,27 @@ class TestPositionUtils(unittest.TestCase):
         rect = ((10, 20), (40, 60))
         self.assertEqual(padding_box(rect, 5),
                          ((5, 15), (45, 65)))
+
+    def test_bounding_boxes_by_line_one_line(self):
+        rects = [
+            ((0, 0), (10, 20)),
+            ((10, 0), (20, 20)),
+            ((25, 0), (35, 15)),
+        ]
+        self.assertEqual(list(bounding_boxes_by_line(rects)), [((0, 0), (35, 20))])
+
+    def test_bounding_boxes_by_line_multiple_lines(self):
+        rects = [
+            ((100, 0), (110, 20)),
+            ((110, 0), (120, 20)),
+            ((125, 0), (135, 15)),
+            ((0, 20), (10, 40)),
+            ((10, 20), (20, 40)),
+            ((25, 20), (35, 35)),
+        ]
+        self.assertEqual(list(bounding_boxes_by_line(rects)),
+                         [((100, 0), (135, 20)), ((0, 20), (35, 40))])
+
 
 if __name__ == '__main__':
     unittest.main()

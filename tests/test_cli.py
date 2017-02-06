@@ -129,6 +129,15 @@ class TestFindSecretRects(unittest.TestCase):
 
         self.assertEquals(secret_rects, [((1500, 235), (1705, 258))])
 
+    def test_wrapped_secrets(self):
+        image = Image.open(os.path.join(FIXTURES_DIR, 'original_wrapped.png'))
+        secret_res = [re.compile(r'\d{15,}')]
+
+        secret_rects = find_secret_rects(image, secret_res, 'eng')
+
+        self.assertEquals(secret_rects,
+                          [((1900, 1165), (2042, 1191)), ((1149, 1205), (1309, 1231))])
+
 
 if __name__ == '__main__':
     unittest.main()

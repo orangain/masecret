@@ -66,3 +66,31 @@ def padding_box(rect, padding):
 
     return (add_positions(top_left, (-padding, -padding)),
             add_positions(bottom_right, (padding, padding)))
+
+
+def bounding_boxes_by_line(rects):
+    """
+    Get bounding Rects by line from list of Rects.
+
+    :param list rects
+    :return generator of bouding Rects
+    :rtype generator
+    """
+
+    if not rects:
+        return
+
+    oneline_rects = [rects.pop(0)]
+    while rects:
+        rect = rects.pop(0)
+        x = rect[0][0]
+        prev_rect = oneline_rects[-1]
+        prev_x = prev_rect[0][0]
+        if prev_x <= x:
+            oneline_rects.append(rect)
+        else:
+            # Detect line break
+            yield bounding_box(oneline_rects)
+            oneline_rects = [rect]
+
+    yield bounding_box(oneline_rects)
