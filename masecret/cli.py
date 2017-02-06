@@ -182,9 +182,10 @@ def find_secret_rects(image, secret_res, lang, tesseract_configs=None):
     # into WHITE by pasting image into an white background.
     #
     # See: http://stackoverflow.com/questions/9166400/convert-rgba-png-to-rgb-with-pil
-    background = Image.new('RGB', image.size, (255, 255, 255))
-    background.paste(image, mask=image.split()[3])  # Paste only RGB, not A channel
-    image = background
+    if image.mode == 'RGBA':
+        background = Image.new('RGB', image.size, (255, 255, 255))
+        background.paste(image, mask=image.split()[3])  # Paste image masked by alpha channel [3]
+        image = background
 
     # offset = (0, 150)
     # cropped_image = image.crop((offset[0], offset[1], image.size[0], 220))
