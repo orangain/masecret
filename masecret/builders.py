@@ -6,7 +6,7 @@ class ModifiedCharBoxBuilder(CharBoxBuilder):
 
     # Though CharBoxBuilder's tesseract_configs includes 'batch.nochop',
     # this cause misrecognition. So it is removed.
-    tesseract_configs = ['makebox']
+    tesseract_configs = ['-psm', '4', 'makebox']
 
     def __init__(self, image_height):
         """
