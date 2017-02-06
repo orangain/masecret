@@ -4,16 +4,17 @@ from pyocr.builders import Box
 
 class ModifiedCharBoxBuilder(CharBoxBuilder):
 
-    # Though CharBoxBuilder's tesseract_configs includes 'batch.nochop',
-    # this cause misrecognition. So it is removed.
-    tesseract_configs = ['-psm', '4', 'makebox']
-
     def __init__(self, image_height):
         """
         param: int image_height
         """
 
         super().__init__()
+
+        # Though CharBoxBuilder's tesseract_configs includes 'batch.nochop',
+        # this cause misrecognition. So it is removed.
+        self.tesseract_configs = ['-psm', '4', 'makebox']
+
         self.image_height = image_height
 
     def read_file(self, file_descriptor):

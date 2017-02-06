@@ -39,7 +39,7 @@ parser.add_argument('-c', '--color', dest='color', default='#666',
 parser.add_argument('-i', '--in-place', dest='in_place', action='store_true', default=False,
                     help='mask image files in-place. WARNING: No backup files will be saved')
 parser.add_argument('--tesseract-params', dest='tesseract_params', metavar='PARAMS',
-                    default=' '.join(ModifiedCharBoxBuilder.tesseract_configs),
+                    default=' '.join(ModifiedCharBoxBuilder(0).tesseract_configs),
                     help='(Advanced Option) additional parameters passed to tesseract')
 
 

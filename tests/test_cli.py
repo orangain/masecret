@@ -119,7 +119,7 @@ class TestFindSecretRects(unittest.TestCase):
 
         secret_rects = find_secret_rects(image, secret_res, 'eng')
 
-        self.assertEquals(secret_rects, [((1460, 235), (1665, 259))])
+        self.assertEquals(secret_rects, [((1460, 235), (1665, 258))])
 
     def test_find_secret_rects_jpn(self):
         image = Image.open(os.path.join(FIXTURES_DIR, 'original_jpn.png'))
@@ -127,7 +127,7 @@ class TestFindSecretRects(unittest.TestCase):
 
         secret_rects = find_secret_rects(image, secret_res, 'eng+jpn')
 
-        self.assertEquals(secret_rects, [((1500, 235), (1705, 259))])
+        self.assertEquals(secret_rects, [((1500, 235), (1705, 258))])
 
 
 if __name__ == '__main__':
