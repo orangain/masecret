@@ -170,12 +170,27 @@ def find_secret_rects(image, secret_res, lang, tesseract_configs=None):
     rtype: list
     """
 
+    # When using pyocr, an input image is converted to RGB (not RGBA).
+    # During the conversion, transparent pixels are converted into BLACK.
+    # Sometimes the black pixels get in the way of recognizing text.
+    #
+    # For example, macOS's screenshot image taken by Command+Shift+4+Space
+    # has transparent pixels around an window. This results in a black and
+    # thick border in the edge of image. The border worsen quality of OCR
+    # of text near by the border. To avoid this, convert transparent pixels
+    # into WHITE by pasting image into an white background.
+    #
+    # See: http://stackoverflow.com/questions/9166400/convert-rgba-png-to-rgb-with-pil
+    background = Image.new('RGB', image.size, (255, 255, 255))
+    background.paste(image, mask=image.split()[3])  # Paste only RGB, not A channel
+    image = background
+
     # offset = (0, 150)
     # cropped_image = image.crop((offset[0], offset[1], image.size[0], 220))
     offset = (0, 0)
     cropped_image = image
 
-    builder = ModifiedCharBoxBuilder(image.size[1])
+    builder = ModifiedCharBoxBuilder(cropped_image.size[1])
     if tesseract_configs:
         builder.tesseract_configs = tesseract_configs
 
