@@ -5,9 +5,9 @@ import re
 import os
 import tempfile
 
-from PIL import Image
+from PIL import Image, ImageColor
 
-from masecret.cli import parser, parse_args, get_secret_res, input_output_pairs, find_secret_rects
+from masecret.cli import parser, parse_args, get_secret_res, input_output_pairs, find_secret_rects, mask_rect
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), 'fixtures')
 
@@ -114,29 +114,38 @@ class TestInputOutputPairs(unittest.TestCase):
 class TestFindSecretRects(unittest.TestCase):
 
     def test_find_secret_rects(self):
-        image = Image.open(os.path.join(FIXTURES_DIR, 'original_eng.png'))
+        image = Image.open(os.path.join(FIXTURES_DIR, 'eng_original.png'))
         secret_res = [re.compile(r'[-\d]{12,}')]
 
         secret_rects = find_secret_rects(image, secret_res, 'eng')
 
         self.assertEquals(secret_rects, [((1460, 235), (1665, 258))])
+        self._save_image(image, secret_rects, 'eng_masked.png')
 
     def test_find_secret_rects_jpn(self):
-        image = Image.open(os.path.join(FIXTURES_DIR, 'original_jpn.png'))
+        image = Image.open(os.path.join(FIXTURES_DIR, 'jpn_original.png'))
         secret_res = [re.compile(r'[-—\d]{12,}')]  # include dash sign
 
         secret_rects = find_secret_rects(image, secret_res, 'eng+jpn')
 
         self.assertEquals(secret_rects, [((1500, 235), (1705, 258))])
+        self._save_image(image, secret_rects, 'jpn_masked.png')
 
     def test_wrapped_secrets(self):
-        image = Image.open(os.path.join(FIXTURES_DIR, 'original_wrapped.png'))
+        image = Image.open(os.path.join(FIXTURES_DIR, 'wrapped_original.png'))
         secret_res = [re.compile(r'\d{15,}')]
 
         secret_rects = find_secret_rects(image, secret_res, 'eng')
 
         self.assertEquals(secret_rects,
                           [((1900, 1165), (2042, 1191)), ((1149, 1205), (1309, 1231))])
+        self._save_image(image, secret_rects, 'wrapped_masked.png')
+
+    def _save_image(self, image, secret_rects, filename):
+        fill_color = ImageColor.getrgb('#F0F')
+        for rect in secret_rects:
+            mask_rect(image, rect, fill_color)
+        image.save(os.path.join(FIXTURES_DIR, filename))
 
 
 if __name__ == '__main__':
