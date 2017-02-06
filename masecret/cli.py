@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import argparse
+import shlex
 
 from PIL import Image, ImageDraw, ImageColor
 from pyocr.tesseract import image_to_string
@@ -37,9 +38,9 @@ parser.add_argument('-c', '--color', dest='color', default='#666',
                     help='color to fill secrets')
 parser.add_argument('-i', '--in-place', dest='in_place', action='store_true', default=False,
                     help='mask image files in-place. WARNING: No backup files will be saved')
-parser.add_argument('--tesseract-configs', dest='tesseract_configs', metavar='CONFIGS',
-                    default=','.join(ModifiedCharBoxBuilder.tesseract_configs),
-                    help='(Advanced Option) comma-separated configs to be passed to tesseract')
+parser.add_argument('--tesseract-params', dest='tesseract_params', metavar='PARAMS',
+                    default=' '.join(ModifiedCharBoxBuilder.tesseract_configs),
+                    help='(Advanced Option) additional parameters passed to tesseract')
 
 
 def main():
@@ -49,7 +50,7 @@ def main():
     options = {
         'lang': args.lang,
         'fill_color': ImageColor.getrgb(args.color),
-        'tesseract_configs': args.tesseract_configs.split(','),
+        'tesseract_configs': shlex.split(args.tesseract_params),
     }
 
     for input_path, output_path in input_output_pairs(args):
