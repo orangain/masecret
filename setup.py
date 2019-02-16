@@ -161,7 +161,7 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Utilities",
     ],
-    install_requires=['Pillow', 'pyocr>=0.4.3'],
+    install_requires=['Pillow', 'pyocr>=0.5.3'],
     entry_points={
         'console_scripts': [
             'masecret = masecret.cli:main'
