@@ -15,6 +15,8 @@ masecret
 
 masecret is a command to mask secret information in image files using OCR.
 
+**DISCLAIMER**: There is no guarantee that all the secret information is successfully masked. You must make sure that all the secret information is masked.
+
 Prerequisite
 ------------
 
