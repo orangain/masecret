@@ -148,6 +148,7 @@ setup(
     author_email="orangain@gmail.com",
     description="A command to mask secret information of images using OCR",
     long_description=long_description,
+    long_description_content_type='text/x-rst',
     license="MIT",
     keywords="ocr image screenshot secret mask",
     url="https://github.com/orangain/masecret",
