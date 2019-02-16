@@ -61,12 +61,12 @@ Mask image files in-place with ``-i`` option::
 
     $ masecret -i -r '[-\d]{12,}' original1.png original2.png ...
 
-WARNING: No backup files will be saved.
+WARNING: No backup files will be created.
 
 SECRETS.txt
 ~~~~~~~~~~~
 
-If ``-r`` option is not specified, regular expression will be read from a file named
+When ``-r`` option is not provided, regular expressions are read from a file named
 ``SECRETS.txt`` in a current directory.
 Content of the file is regular expression patterns that match secret information
 you want to mask. You can include multiple patterns line by line.
